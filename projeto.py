@@ -151,3 +151,42 @@ def consultar_usuarios_vencidos():
         usuario = usuarios_collection.find_one({'_id': emprestimo['usuario_id']})
         livro = livros_collection.find_one({'_id': emprestimo['livro_id']})
         print(f"Usuário: {usuario['nome']}, Livro: {livro['titulo']}, Data de devolução: {emprestimo['data_devolucao'].strftime('%d/%m/%Y')}")
+
+# Menu principal
+def menu():
+    while True:
+        print("\n---- Menu Biblioteca ----")
+        print("1. Cadastrar Livro")
+        print("2. Cadastrar Usuário")
+        print("3. Registrar Empréstimo")
+        print("4. Devolver Livro")
+        print("5. Listar Livros Disponíveis")
+        print("6. Consultar Empréstimos Abertos")
+        print("7. Consultar Usuários com Empréstimos Vencidos")
+        print("0. Sair")
+
+        opcao = input("Escolha uma opção: ")
+
+        if opcao == '1':
+            cadastrar_livro()
+        elif opcao == '2':
+            cadastrar_usuario()
+        elif opcao == '3':
+            registrar_emprestimo()
+        elif opcao == '4':
+            devolver_livro()
+        elif opcao == '5':
+            listar_livros_disponiveis()
+        elif opcao == '6':
+            consultar_emprestimos_abertos()
+        elif opcao == '7':
+            consultar_usuarios_vencidos()
+        elif opcao == '0':
+            print("Saindo...")
+            break
+        else:
+            print("Opção inválida! Tente novamente.")
+
+
+# Iniciar o menu interativo
+menu()
