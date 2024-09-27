@@ -63,3 +63,17 @@ def cadastrar_livro():
     livros_collection.insert_one(livro)
     print("Livro cadastrado com sucesso!")
 
+def cadastrar_usuario():
+    nome = input_string("Digite o nome do usuário: ")
+    email = input("Digite o e-mail do usuário: ")
+    data_nascimento = input_data_brasil("Digite a data de nascimento (dd/mm/aaaa): ")
+    documento = input("Digite o número do documento (CPF ou RG): ")
+
+    usuario = {
+        'nome': nome,
+        'email': email,
+        'data_nascimento': data_nascimento,
+        'documento': documento
+    }
+    usuarios_collection.insert_one(usuario)
+    print("Usuário cadastrado com sucesso!")
