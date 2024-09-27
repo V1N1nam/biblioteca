@@ -141,3 +141,13 @@ def consultar_emprestimos_abertos():
             print(f"Livro: {livro['titulo']}, Data de devolução: {emprestimo['data_devolucao'].strftime('%d/%m/%Y')}")
     else:
         print("Usuário não encontrado!")
+
+def consultar_usuarios_vencidos():
+    emprestimos_vencidos = emprestimos_collection.find({
+        'data_devolucao': {'$lt': datetime.now()},
+        'devolvido': False
+    })
+    for emprestimo in emprestimos_vencidos:
+        usuario = usuarios_collection.find_one({'_id': emprestimo['usuario_id']})
+        livro = livros_collection.find_one({'_id': emprestimo['livro_id']})
+        print(f"Usuário: {usuario['nome']}, Livro: {livro['titulo']}, Data de devolução: {emprestimo['data_devolucao'].strftime('%d/%m/%Y')}")
