@@ -43,3 +43,23 @@ def input_data_brasil(mensagem):
         except ValueError:
             print("Data inválida! Insira no formato DD/MM/AAAA.")
 
+def cadastrar_livro():
+    titulo = input_string("Digite o título do livro: ")
+    autor = input_string("Digite o autor do livro: ")
+    genero = input_string("Digite o gênero do livro: ")
+    ano_publicacao = input_int("Digite o ano de publicação: ")
+    isbn = input("Digite o ISBN do livro: ")  # O ISBN pode conter números e letras
+    quantidade = input_int("Digite a quantidade de exemplares: ")
+
+    livro = {
+        'titulo': titulo,
+        'autor': autor,
+        'genero': genero,
+        'ano_publicacao': ano_publicacao,
+        'isbn': isbn,
+        'quantidade': quantidade,
+        'disponivel': quantidade
+    }
+    livros_collection.insert_one(livro)
+    print("Livro cadastrado com sucesso!")
+
