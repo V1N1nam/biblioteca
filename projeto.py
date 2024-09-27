@@ -125,3 +125,19 @@ def devolver_livro():
             print("Empréstimo não encontrado!")
     else:
         print("Livro ou usuário não encontrado!")
+
+def listar_livros_disponiveis():
+    livros = livros_collection.find({'disponivel': {'$gt': 0}})
+    for livro in livros:
+        print(f"Título: {livro['titulo']}, Disponíveis: {livro['disponivel']}")
+
+def consultar_emprestimos_abertos():
+    documento_usuario = input("Digite o número do documento do usuário: ")
+    usuario = usuarios_collection.find_one({'documento': documento_usuario})
+    if usuario:
+        emprestimos = emprestimos_collection.find({'usuario_id': usuario['_id'], 'devolvido': False})
+        for emprestimo in emprestimos:
+            livro = livros_collection.find_one({'_id': emprestimo['livro_id']})
+            print(f"Livro: {livro['titulo']}, Data de devolução: {emprestimo['data_devolucao'].strftime('%d/%m/%Y')}")
+    else:
+        print("Usuário não encontrado!")
