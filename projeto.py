@@ -132,25 +132,34 @@ def listar_livros_disponiveis():
         print(f"Título: {livro['titulo']}, Disponíveis: {livro['disponivel']}")
 
 def consultar_emprestimos_abertos():
-    documento_usuario = input("Digite o número do documento do usuário: ")
-    usuario = usuarios_collection.find_one({'documento': documento_usuario})
-    if usuario:
-        emprestimos = emprestimos_collection.find({'usuario_id': usuario['_id'], 'devolvido': False})
-        for emprestimo in emprestimos:
+    emprestimos = emprestimos_collection.find({'devolvido': False})
+    emprestimos_list = list(emprestimos)  # Converte o cursor em uma lista
+    if emprestimos_list:  # Verifica se a lista não está vazia
+        print("\n--- Empréstimos Abertos ---")
+        for emprestimo in emprestimos_list:
+            usuario = usuarios_collection.find_one({'_id': emprestimo['usuario_id']})
             livro = livros_collection.find_one({'_id': emprestimo['livro_id']})
-            print(f"Livro: {livro['titulo']}, Data de devolução: {emprestimo['data_devolucao'].strftime('%d/%m/%Y')}")
+            print(f"Usuário: {usuario['nome']}, Livro: {livro['titulo']}, "
+                  f"Data de Devolução: {emprestimo['data_devolucao'].strftime('%d/%m/%Y')}")
     else:
-        print("Usuário não encontrado!")
+        print("Não há empréstimos abertos.")
 
-def consultar_usuarios_vencidos():
+def listar_emprestimos_vencidos():
     emprestimos_vencidos = emprestimos_collection.find({
         'data_devolucao': {'$lt': datetime.now()},
         'devolvido': False
     })
-    for emprestimo in emprestimos_vencidos:
-        usuario = usuarios_collection.find_one({'_id': emprestimo['usuario_id']})
-        livro = livros_collection.find_one({'_id': emprestimo['livro_id']})
-        print(f"Usuário: {usuario['nome']}, Livro: {livro['titulo']}, Data de devolução: {emprestimo['data_devolucao'].strftime('%d/%m/%Y')}")
+    emprestimos_vencidos_list = list(emprestimos_vencidos)  # Converte o cursor em uma lista
+    if emprestimos_vencidos_list:  # Verifica se a lista não está vazia
+        print("\n--- Empréstimos Vencidos ---")
+        for emprestimo in emprestimos_vencidos_list:
+            usuario = usuarios_collection.find_one({'_id': emprestimo['usuario_id']})
+            livro = livros_collection.find_one({'_id': emprestimo['livro_id']})
+            print(f"Usuário: {usuario['nome']}, Livro: {livro['titulo']}, "
+                  f"Data de Empréstimo: {emprestimo['data_emprestimo'].strftime('%d/%m/%Y')}, "
+                  f"Data de Devolução: {emprestimo['data_devolucao'].strftime('%d/%m/%Y')}")
+    else:
+        print("Não há empréstimos vencidos.")
 
 # Menu principal
 def menu():
@@ -161,8 +170,8 @@ def menu():
         print("3. Registrar Empréstimo")
         print("4. Devolver Livro")
         print("5. Listar Livros Disponíveis")
-        print("6. Consultar Empréstimos Abertos")
-        print("7. Consultar Usuários com Empréstimos Vencidos")
+        print("6. Listar Empréstimos Abertos")  # Atualização do nome
+        print("7. Listar Empréstimos Vencidos")  # Atualização do nome
         print("0. Sair")
 
         opcao = input("Escolha uma opção: ")
@@ -178,9 +187,9 @@ def menu():
         elif opcao == '5':
             listar_livros_disponiveis()
         elif opcao == '6':
-            consultar_emprestimos_abertos()
+            consultar_emprestimos_abertos()  # Chama a função de listar empréstimos abertos
         elif opcao == '7':
-            consultar_usuarios_vencidos()
+            listar_emprestimos_vencidos()  # Chama a função de listar empréstimos vencidos
         elif opcao == '0':
             print("Saindo...")
             break
