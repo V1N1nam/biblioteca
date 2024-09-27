@@ -34,4 +34,12 @@ def input_int(mensagem):
         except ValueError:
             print("Entrada inválida! Insira apenas números inteiros.")
 
+def input_data_brasil(mensagem):
+    while True:
+        data_str = input(mensagem)
+        try:
+            data = datetime.strptime(data_str, '%d/%m/%Y')
+            return data.strftime('%d/%m/%Y')  # Retorna a data formatada no padrão brasileiro
+        except ValueError:
+            print("Data inválida! Insira no formato DD/MM/AAAA.")
 
