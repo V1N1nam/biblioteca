@@ -77,3 +77,29 @@ def cadastrar_usuario():
     }
     usuarios_collection.insert_one(usuario)
     print("Usuário cadastrado com sucesso!")
+
+def registrar_emprestimo():
+    isbn = input("Digite o ISBN do livro para empréstimo: ")
+    documento_usuario = input("Digite o número do documento do usuário: ")
+
+    livro = livros_collection.find_one({'isbn': isbn})
+    usuario = usuarios_collection.find_one({'documento': documento_usuario})
+
+    if livro and usuario:
+        if livro['disponivel'] > 0:
+            data_emprestimo = datetime.now()
+            data_devolucao = data_emprestimo + timedelta(days=14)
+            emprestimo = {
+                'usuario_id': usuario['_id'],
+                'livro_id': livro['_id'],
+                'data_emprestimo': data_emprestimo,
+                'data_devolucao': data_devolucao,
+                'devolvido': False
+            }
+            emprestimos_collection.insert_one(emprestimo)
+            livros_collection.update_one({'_id': livro['_id']}, {'$inc': {'disponivel': -1}})
+            print(f"Empréstimo registrado! Devolução prevista para {data_devolucao.strftime('%d/%m/%Y')}")
+        else:
+            print("Não há exemplares disponíveis!")
+    else:
+        print("Livro ou usuário não encontrado!")
