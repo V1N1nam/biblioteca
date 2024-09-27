@@ -103,3 +103,25 @@ def registrar_emprestimo():
             print("Não há exemplares disponíveis!")
     else:
         print("Livro ou usuário não encontrado!")
+
+def devolver_livro():
+    isbn = input("Digite o ISBN do livro a ser devolvido: ")
+    documento_usuario = input("Digite o número do documento do usuário: ")
+
+    livro = livros_collection.find_one({'isbn': isbn})
+    usuario = usuarios_collection.find_one({'documento': documento_usuario})
+
+    if livro and usuario:
+        emprestimo = emprestimos_collection.find_one({
+            'livro_id': livro['_id'],
+            'usuario_id': usuario['_id'],
+            'devolvido': False
+        })
+        if emprestimo:
+            emprestimos_collection.update_one({'_id': emprestimo['_id']}, {'$set': {'devolvido': True, 'data_real_devolucao': datetime.now()}})
+            livros_collection.update_one({'_id': livro['_id']}, {'$inc': {'disponivel': 1}})
+            print("Livro devolvido com sucesso!")
+        else:
+            print("Empréstimo não encontrado!")
+    else:
+        print("Livro ou usuário não encontrado!")
